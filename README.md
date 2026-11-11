@@ -1,5 +1,7 @@
 # Binary Interaction Approximation (BIA) — 3D Multi-Body Hybrid Fortran/CUDA Code
 
+[![DOI](https://zenodo.org)](https://doi.org/10.5281/zenodo.24131822)
+
 ## Overview & Architecture
 This repository contains the official 3D multi-body parallel implementation of the Binary Interaction Approximation (BIA) framework for high-precision N-body Coulombic plasma and gravitational simulations. Built as a **strictly momentum-conserving** hybrid Fortran 90 and CUDA C++ solver, it decomposes 3D multi-body dynamics into exact, pairwise 2D Keplerian orbital trajectories (`hyperbola`, `parabola`, and `ellipse`) without time-step discretization errors.
 
@@ -39,6 +41,7 @@ Validated on a CUDA Fermi-architecture workstation against a Direct Integration 
 ---
 
 ## Citation & License
-* **Sequential Reference Archive (Zenodo DOI):** Shun-ichi Oikawa, *Binary Interaction Approximation (BIA) Code Package (v1.0.1)*, Zenodo (2026). DOI: [10.5281/zenodo.24122562](https://doi.org)
+* **This Software Archive (3D Hybrid Fortran/CUDA, Zenodo DOI):** Shun-ichi Oikawa, *Binary Interaction Approximation (BIA) — 3D Multi-Body Hybrid Fortran/CUDA Code (v1.0.0)*, Zenodo (2026). DOI: [10.5281/zenodo.24131822](https://doi.org/10.5281/zenodo.24131822)
+* **Sequential C/GSL Reference Archive (Zenodo DOI):** Shun-ichi Oikawa, *Binary Interaction Approximation (BIA) Code Package (v1.0.1)*, Zenodo (2026). DOI: [10.5281/zenodo.24122562](https://doi.org)
 * **Foundational Papers:** S. Oikawa et al., *Plasma and Fusion Research* (2011, 2013, 2014).
 * **License:** GNU General Public License v3.0 (GPL-3.0).
