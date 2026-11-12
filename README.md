@@ -1,44 +1,78 @@
 # Binary Interaction Approximation (BIA) — 3D Multi-Body Hybrid Fortran/CUDA Code
 
-[![DOI](https://zenodo.org)](https://doi.org/10.5281/zenodo.24131822)
+[![DOI](https://zenodo.org)](https://doi.org)
 
-## Overview & Architecture
-This repository contains the official 3D multi-body parallel implementation of the Binary Interaction Approximation (BIA) framework for high-precision N-body Coulombic plasma and gravitational simulations. Built as a **strictly momentum-conserving** hybrid Fortran 90 and CUDA C++ solver, it decomposes 3D multi-body dynamics into exact, pairwise 2D Keplerian orbital trajectories (`hyperbola`, `parabola`, and `ellipse`) without time-step discretization errors.
+A three-dimensional multi-body simulation package implementing the **Binary Interaction Approximation (BIA)** in a hybrid **Fortran 90 / NVIDIA CUDA C++** architecture.
 
-### Key Features
-* **Strictly Momentum-Conserving Formulation:** Enforces exact pairwise action-reaction symmetry across all interacting pairs, preserving total linear momentum down to $\mathcal{O}(10^{-21})$–$\mathcal{O}(10^{-19})$ without artificial center-of-mass drift.
-* **Dual Solver Modes (`ALG` vs. `RKF`):** Features an integration-free exact analytical mode (`ALG`) solving Keplerian trajectories via Newton-Raphson iteration, alongside a numerical 6th-order Runge-Kutta-Fehlberg mode (`RKF`) for benchmarking.
-* **Hybrid CPU/GPU Execution (`PLATFM = 'GPU'` / `'CPU'`):** Offloads $\mathcal{O}(N^2)$ pairwise relative orbital evaluations onto NVIDIA CUDA threads while utilizing Intel Fortran for host orchestration and precision diagnostics.
-* **Triple-Precision Conservation Auditing:** Cross-verifies total linear momentum, angular momentum, and total energy ($KE + PE$) across GPU double precision (`CUDA`), CPU double precision (`DBLE`), and CPU quadruple precision (`QUAD`).
+## Key Features
+* **Exact Momentum-Conserving Formulation:** Evaluates two-body relative displacements and velocity changes in the local orbital plane $(\xi, \eta, \zeta)$ and updates laboratory-frame states symmetrically, conserving total linear momentum to machine precision ($\sim 10^{-20}$).
+* **Dual Solver Modes (`ALG` vs. `RKF`):**
+  * `ALG` (*Exact Analytical Solver*): Integration-free exact Keplerian trajectory calculation (hyperbolic, parabolic, and elliptic) using Cardano's cubic formula and minimum-error-preserving Newton-Raphson iterations.
+  * `RKF` (*6th-Order Runge-Kutta-Fehlberg*): Adaptive-step numerical ODE integration of the relative two-body equations of motion.
+* **Hybrid CPU / GPU Execution (`PLATFM`):** Supports massively parallel execution on NVIDIA GPUs (`GPU`, CUDA C++) as well as multi-core host execution (`CPU`, Fortran).
+* **Test-Particle Ensemble Mode (`N_end = 1`):** Efficiently computes $\Delta t = 1$ trajectories of a test particle placed at the origin across large initial-condition ensembles (`N_calc = 10**N_calc_EXP`) within the Debye sphere, directly yielding velocity-space diffusion and dynamical friction without small-angle Coulomb logarithm cutoffs.
 
----
+## Physical Scaling & Specific Energy Convention
+* **Dimensionless Interaction Parameter (`eps_th`):** Defined as $\varepsilon_{\text{th}} = \pm 2 \times 3 \times 10^{-7}$ (twice the single-particle coupling parameter due to reduced mass $\mu = m/2$, with negative sign for attractive interactions and positive sign for repulsive interactions).
+* **Velocity-Squared Specific Energy (No $1/2$ Factor):** Throughout the entire code suite (`IC`, `dim`, and `bia`), kinetic and potential energies are normalized per unit mass with velocity-squared dimensions ($[v^2]$) **without the $1/2$ factor**:
+  $$K = \sum_{i=1}^{N_p} |\mathbf{v}_i|^2, \qquad U = \sum_{i < j} \frac{2\varepsilon_{\text{th}}}{|\mathbf{r}_i - \mathbf{r}_j|}, \qquad E = K + U.$$
 
-## Physical Scaling & `eps_th` Parameter
-* **`eps_th` (Dimensionless Interaction Parameter):** Represents the Coulombic (or gravitational) interaction strength normalized by the particle mass, setting the characteristic relative thermal speed to $1$ and the mean inter-particle distance to $1$. Under typical fusion-grade proton plasma conditions, this normalized single-particle interaction parameter is approximately $3 \times 10^{-7}$.
-* **Factor of $2$ (Reduced Mass Effect):** Solving the two-body relative equation of motion ($\mathbf{r}_{ij} = \mathbf{r}_i - \mathbf{r}_j$) divides by the reduced mass $\mu = m/2$, introducing an exact factor of $2$ into the relative acceleration equation ($\varepsilon_{\text{th}} = \pm 2 \times 3 \times 10^{-7} = \pm 6.0 \times 10^{-7}$).
-* **Sign Convention:** Negative (`-6.0e-7`, i.e., `-2 * 3d-7`) denotes **attractive** interactions (gravitational systems or opposite-charge Coulombic attraction), whereas positive (`+6.0e-7`, i.e., `+2 * 3d-7`) denotes **repulsive** interactions (same-species fusion protons). This normalization enables exact analytical integration across macroscopic time steps of $\Delta t = 1$.
+## Verified 4-Mode Benchmark ($N_p = 1,332$, $\Delta t = 1$)
+Benchmarked on NVIDIA GeForce GTX 590 (CUDA 4.2) + Intel Xeon E5-2687W (`ifort -O3 -xhost -pc80`) against full GPU Direct Integration (`dim-cu`, total runtime `8.402 s`, relative energy error $-9.99 \times 10^{-16}$):
 
----
+| Mode (`PLATFM` $\times$ `METHOD`) | Pairwise Compute Time | Total Wall Time | Position RMS Error (`std_r`) | Velocity RMS Error (`std_v`) |
+| :--- | :---: | :---: | :---: | :---: |
+| **`GPU` $\times$ `ALG`** | **0.342 s** | **1.028 s** | $1.28 \times 10^{-12}$ | $3.08 \times 10^{-12}$ |
+| **`CPU` $\times$ `ALG`** | 0.528 s | 1.170 s | $1.56 \times 10^{-12}$ | $3.44 \times 10^{-12}$ |
+| **`GPU` $\times$ `RKF`** | 2.255 s | 2.899 s | $7.47 \times 10^{-13}$ | $1.32 \times 10^{-12}$ |
+| **`CPU` $\times$ `RKF`** | 3.012 s | 3.661 s | $7.47 \times 10^{-13}$ | $1.32 \times 10^{-12}$ |
 
-## Verified 4-Mode Benchmark Performance ($N_p = 1,332$)
-Validated on a CUDA Fermi-architecture workstation against a Direct Integration Method (`DIM`) reference over a macroscopic step $\Delta t = 1$:
+## Repository Structure & End-to-End Workflow
 
-| Execution Mode (`PLATFM` $\times$ `METHOD`) | Pairwise Time | Total Wall Time | Position RMS Error (`std_r`) | Velocity RMS Error (`std_v`) | Momentum Drift (`sum(dU)`) |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`GPU` $\times$ `ALG` (Integration-Free Exact)** | **`0.342 sec`** | **`1.028 sec`** | `1.28e-12` | `3.08e-12` | `7.71e-20` |
-| **`CPU` $\times$ `ALG` (Integration-Free Exact)** | `0.528 sec` | `1.170 sec` | `1.56e-12` | `3.08e-12` | `-5.08e-21` |
-| **`GPU` $\times$ `RKF` (6th-Order Numerical)** | `2.255 sec` | `2.899 sec` | `7.47e-13` | `3.08e-12` | `2.38e-19` |
-| **`CPU` $\times$ `RKF` (6th-Order Numerical)** | `3.012 sec` | `3.661 sec` | `7.47e-13` | `3.08e-12` | `7.37e-20` |
+### Directory Layout
+* `IC/` : Initial condition generator (`bbb_maker_REV.f90`, `Makefile`).
+* `dim/` : Direct Integration Method reference solver (`dim_3D.f90`, `rkf_kernel.cu`, `fortran_thunking.c`, `Invariance.f90`, `Makefile`).
+* `OUT/` : Directory for binary initial conditions (`.bbb`), exact references (`.DIM`), and BIA outputs (`.BIA`, `BIA_10^k.*`).
+* `./` (Root) : Main 3D BIA hybrid Fortran/CUDA solver (`bia.f90`, `find_dXYUV_kernel.cu`, `bia-rkf.cu`, analytical Kepler solvers, invariance auditors, and `Makefile`).
 
-* **Speedup:** The integration-free CUDA solver (`GPU` $\times$ `ALG`) achieves an **8.8$\times$ speedup** in pairwise evaluation over the traditional numerical integrator (`CPU` $\times$ `RKF`), while matching the `DIM` exact reference to **12 significant digits**.
+### Step 1: Generate Initial Conditions (`IC/`)
+Configure `N_L` (shell layers, $N_p = (2N_L + 1)^3 + 1$) and `N_calc_EXP` ($10^{\text{N\_calc\_EXP}}$ ensembles) in `IC/bbb_maker_REV.f90`, then build and run:
+```bash
+cd IC
+make && ./bbb_maker
+```
+This generates `../OUT/0001332_10^0.bbb` (for `N_L = 5, N_calc_EXP = 0`) with the test particle at the origin and field particles ordered outward by shell.
 
----
+### Step 2: Generate High-Precision Reference (`dim/`, Optional)
+For full-system verification (`N_end == N_p`), configure `NP` in `dim/dim_3D.f90` and run the GPU 6th-order RKF solver:
+```bash
+cd ../dim
+make && ./dim-cu
+```
+This writes the ground-truth reference trajectory to `../OUT/0001332_10^0.DIM`.
+## Repository Structure & Quick Start (`IC` $\to$ `dim` $\to$ `bia`)
 
-## Repository Structure & Usage
-* Core files include `bia.f90`, CUDA device kernels (`find_dXYUV_kernel.cu`, `bia-rkf.cu`), Fortran Keplerian solvers (`find_hyperbola.f90`, `find_parabola.f90`, `find_ellipse.f90`, `find_dXYUV4.f90`, `find_dXYUV_RKF.f90`), C math wrapper (`sincos.c`), and quadruple-precision auditors (`Invariance_CPU.f90`, `Invariance_QPU.f90`, `invariance.cu`).
-* **Build & Run:** Configure `METHOD`, `PLATFM`, `N_p`, and `eps_th` in `bia.f90`, compile with `make clean && make`, and execute `./bia` using initial conditions in `../OUT/`.
+* **`./` (Root):** 3D Multi-Body Hybrid Fortran/CUDA BIA Solver (`bia.f90`, `find_dXYUV_kernel.cu`, `Makefile`, etc.)
+* **`IC/`:** Layered-shell initial-condition binary generator (`bbb_maker_REV.f90`, `Makefile`)
+* **`dim/`:** GPU-accelerated Direct Integration Method (RKF) reference solver (`dim_3D.f90`, `rkf_kernel.cu`, `Makefile`)
+* **`OUT/`:** Output directory for `.bbb` (initial), `.DIM` (reference), and `.BIA` / `BIA_*` (results)
 
----
+### Step 1: Generate Initial Conditions (`IC/`)
+Set `N_L = 5` ($N_p = 1,332$) and `N_calc_EXP = 0` in `IC/bbb_maker_REV.f90`:
+```bash
+cd IC && make && ./bbb_maker && cd ..
+```
+
+### Step 2: Generate Reference Solution (`dim/`, Optional)
+Required only when running full-system accuracy comparisons (`N_end = N_p`):
+```bash
+cd dim && make && ./dim-cu && cd ..
+```
+
+### Step 3: Run 3D Multi-Body BIA Solver (`./bia`)
+Set `METHOD` (`'ALG'` or `'RKF'`), `PLATFM` (`'GPU'` or `'CPU'`), `N_p = 1332`, and `N_end = N_p` (or `N_end = 1` for test-particle ensembles) in `bia.f90`:
+```bash
+make clean && make && ./bia
 
 ## Citation & License
 * **This Software Archive (3D Hybrid Fortran/CUDA, Zenodo DOI):** Shun-ichi Oikawa, *Binary Interaction Approximation (BIA) — 3D Multi-Body Hybrid Fortran/CUDA Code (v1.0.0)*, Zenodo (2026). DOI: [10.5281/zenodo.24131822](https://doi.org/10.5281/zenodo.24131822)
