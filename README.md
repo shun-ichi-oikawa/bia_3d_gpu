@@ -18,7 +18,7 @@ A three-dimensional multi-body simulation package implementing the **Binary Inte
   $$K = \sum_{i=1}^{N_p} |\mathbf{v}_i|^2, \qquad U = \sum_{i < j} \frac{2\varepsilon_{\text{th}}}{|\mathbf{r}_i - \mathbf{r}_j|}, \qquad E = K + U.$$
 
 ## Verified 4-Mode Benchmark ($N_p = 1,332$, $\Delta t = 1$)
-Benchmarked on NVIDIA GeForce GTX 590 (CUDA 4.2) + Intel Xeon E5-2687W (`ifort -O3 -xhost -pc80`) against full GPU Direct Integration (`dim-cu`, total runtime `8.402 s`, relative energy error $-9.99 \times 10^{-16}$):
+Benchmarked on NVIDIA GeForce GTX 480 (CUDA 4.2) + Intel Xeon E5-2687W (`ifort -O3 -xhost -pc80`) against full GPU Direct Integration (`dim-cu`, total runtime `8.402 s`, relative energy error $-9.99 \times 10^{-16}$):
 
 | Mode (`PLATFM` $\times$ `METHOD`) | Pairwise Compute Time | Total Wall Time | Position RMS Error (`std_r`) | Velocity RMS Error (`std_v`) |
 | :--- | :---: | :---: | :---: | :---: |
