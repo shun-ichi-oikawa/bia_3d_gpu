@@ -1,8 +1,8 @@
 # Binary Interaction Approximation (BIA) — 3D Multi-Body Hybrid Fortran/CUDA Code
 
-[![DOI](https://zenodo.org)](https://doi.org)
+[![DOI](https://zenodo.org)](https://doi.org/10.5281/zenodo.24131822)
 
-A three-dimensional multi-body simulation package implementing the **Binary Interaction Approximation (BIA)** in a hybrid **Fortran 90 / NVIDIA CUDA C++** architecture.
+A three-dimensional multi-body simulation package implementing the **Binary Interaction Approximation (BIA)** in a hybrid **Fortran 90 / NVIDIA CUDA C++** architecture. Compatible with both legacy CUDA 4.2 environments and modern CUDA 11.8+ toolkits on Linux.
 
 ## Key Features
 * **Exact Momentum-Conserving Formulation:** Evaluates two-body relative displacements and velocity changes in the local orbital plane $(\xi, \eta, \zeta)$ and updates laboratory-frame states symmetrically, conserving total linear momentum to machine precision ($\sim 10^{-20}$).
@@ -39,40 +39,23 @@ Benchmarked on NVIDIA GeForce GTX 480 (CUDA 4.2) + Intel Xeon E5-2687W (`ifort -
 Configure `N_L` (shell layers, $N_p = (2N_L + 1)^3 + 1$) and `N_calc_EXP` ($10^{\text{N\_calc\_EXP}}$ ensembles) in `IC/bbb_maker_REV.f90`, then build and run:
 ```bash
 cd IC
-make && ./bbb_maker
+make && ./bbb_maker && cd ..
 ```
-This generates `../OUT/0001332_10^0.bbb` (for `N_L = 5, N_calc_EXP = 0`) with the test particle at the origin and field particles ordered outward by shell.
+This generates `OUT/0001332_10^0.bbb` (for `N_L = 5, N_calc_EXP = 0`) with the test particle at the origin and field particles ordered outward by shell.
 
 ### Step 2: Generate High-Precision Reference (`dim/`, Optional)
-For full-system verification (`N_end == N_p`), configure `NP` in `dim/dim_3D.f90` and run the GPU 6th-order RKF solver:
+Required only for full-system verification (`N_end == N_p`). Configure `NP` in `dim/dim_3D.f90` and run the GPU 6th-order RKF solver:
 ```bash
-cd ../dim
-make && ./dim-cu
+cd dim
+make && ./dim-cu && cd ..
 ```
-This writes the ground-truth reference trajectory to `../OUT/0001332_10^0.DIM`.
-## Repository Structure & Quick Start (`IC` $\to$ `dim` $\to$ `bia`)
-
-* **`./` (Root):** 3D Multi-Body Hybrid Fortran/CUDA BIA Solver (`bia.f90`, `find_dXYUV_kernel.cu`, `Makefile`, etc.)
-* **`IC/`:** Layered-shell initial-condition binary generator (`bbb_maker_REV.f90`, `Makefile`)
-* **`dim/`:** GPU-accelerated Direct Integration Method (RKF) reference solver (`dim_3D.f90`, `rkf_kernel.cu`, `Makefile`)
-* **`OUT/`:** Output directory for `.bbb` (initial), `.DIM` (reference), and `.BIA` / `BIA_*` (results)
-
-### Step 1: Generate Initial Conditions (`IC/`)
-Set `N_L = 5` ($N_p = 1,332$) and `N_calc_EXP = 0` in `IC/bbb_maker_REV.f90`:
-```bash
-cd IC && make && ./bbb_maker && cd ..
-```
-
-### Step 2: Generate Reference Solution (`dim/`, Optional)
-Required only when running full-system accuracy comparisons (`N_end = N_p`):
-```bash
-cd dim && make && ./dim-cu && cd ..
-```
+This writes the ground-truth reference trajectory to `OUT/0001332_10^0.DIM`.
 
 ### Step 3: Run 3D Multi-Body BIA Solver (`./bia`)
 Set `METHOD` (`'ALG'` or `'RKF'`), `PLATFM` (`'GPU'` or `'CPU'`), `N_p = 1332`, and `N_end = N_p` (or `N_end = 1` for test-particle ensembles) in `bia.f90`:
 ```bash
 make clean && make && ./bia
+```
 
 ## Citation & License
 * **This Software Archive (3D Hybrid Fortran/CUDA, Zenodo DOI):** Shun-ichi Oikawa, *Binary Interaction Approximation (BIA) — 3D Multi-Body Hybrid Fortran/CUDA Code (v1.0.0)*, Zenodo (2026). DOI: [10.5281/zenodo.24131822](https://doi.org/10.5281/zenodo.24131822)
