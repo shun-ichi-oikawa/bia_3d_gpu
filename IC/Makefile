@@ -1,9 +1,10 @@
 all: bbb_maker
 
-FC=f95
+# Standard GNU Fortran (Default for portability)
+FC = gfortran
 
 bbb_maker: bbb_maker_REV.f90
 	$(FC) -O3 -o bbb_maker bbb_maker_REV.f90
 
 clean:
-	rm bbb_maker
+	rm -f bbb_maker *.mod
