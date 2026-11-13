@@ -1,39 +1,36 @@
-all: bia
+all: dim-cu
 
 # --- Fortran Compiler Selection ---
-# Standard GNU Fortran (Default for CUDA 11.8+ / modern Linux)
-FC = gfortran -O3
-# Intel Fortran (Used for legacy GTX 480 / CUDA 4.2 benchmark)
-# FC = ifort -O3 -xhost -pc80
+# Standard GNU Fortran (Default for portability)
+FC = gfortran -O3 -lcublas
+# Intel Fortran (Uncomment if using ifort on legacy/HPC systems)
+# FC = ifort -O3 -xhost -parallel -lcublas
 
-FS = bia.f90 Invariance_CPU.f90 Invariance_QPU.f90 \
-find_dXYUV_RKF.f90 find_hyperbola.f90 find_parabola.f90 find_ellipse.f90
-
-NV = nvcc -O3 -Xcompiler -march=native -Xcompiler -Wall
+NV = nvcc -O3
 
 # --- GPU Architecture Selection ---
 # Modern CUDA 11.x / 12.x (Adjust sm_XX to match your GPU, e.g., sm_75, sm_80, sm_86)
-GENCODE = -arch=sm_75
+GENCODE = -gencode=arch=compute_75,code=sm_75 -gencode=arch=compute_75,code=compute_75
+
 # Legacy CUDA 4.2 (NVIDIA GeForce GTX 480 / Fermi)
-# GENCODE = -arch=sm_20
+# GENCODE = \
+# -gencode=arch=compute_13,code=sm_13 -gencode=arch=compute_13,code=compute_13 \
+# -gencode=arch=compute_20,code=sm_20 -gencode=arch=compute_20,code=compute_20
 
 # --- Linker Flags ---
 # Modern CUDA (CUDA 5.0+)
-LIB = -lcudart -lcublas -lstdc++
+LDFLAGS = -lcudart -lstdc++
 # Legacy CUDA 4.2 (Requires CUDA SDK cutil)
-# LIB = -lcudart -lcutil_x86_64 -lcublas -lstdc++
+# LDFLAGS = -lcudart -lcutil_x86_64 -lstdc++
 
-bia: $(FS) find_dXYUV_kernel.o invariance.o sincos.o Makefile
-	$(FC) -o bia bia.f90 find_dXYUV_kernel.o invariance.o sincos.o $(LIB)
+dim-cu: dim_3D.f90 Invariance.f90 rkf_kernel.o fortran_thunking.o Makefile
+	$(FC) -o dim-cu dim_3D.f90 Invariance.f90 rkf_kernel.o fortran_thunking.o $(LDFLAGS)
 
-sincos.o: sincos.c Makefile
-	$(NV) $(GENCODE) -c sincos.c
+rkf_kernel.o: rkf_kernel.cu Makefile
+	$(NV) $(GENCODE) -c rkf_kernel.cu
 
-invariance.o: invariance.cu Makefile
-	$(NV) $(GENCODE) -c invariance.cu
-
-find_dXYUV_kernel.o: find_dXYUV_kernel.cu bia-rkf.cu Makefile
-	$(NV) $(GENCODE) -c find_dXYUV_kernel.cu
+fortran_thunking.o: fortran_thunking.c
+	$(NV) $(GENCODE) -c fortran_thunking.c -I/usr/local/cuda/src
 
 clean:
-	rm -f bia *.o *.mod
+	rm -f dim-cu rkf_kernel.o fortran_thunking.o *.mod
