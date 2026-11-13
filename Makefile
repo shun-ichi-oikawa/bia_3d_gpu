@@ -1,4 +1,4 @@
-#all: bia
+all: bia
 
 #C = f95 -O3
 #C = ifort -O3 -xhost -parallel
