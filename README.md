@@ -8,7 +8,7 @@ A three-dimensional multi-body simulation package implementing the **Binary Inte
 * **Exact Momentum-Conserving Formulation:** Evaluates two-body relative displacements and velocity changes in the local orbital plane $(\xi, \eta, \zeta)$ and updates laboratory-frame states symmetrically, conserving total linear momentum to machine precision ($\sim 10^{-20}$).
 * **Dual Solver Modes (`ALG` vs. `RKF`):**
   * `ALG` (*Exact Analytical Solver*): Integration-free exact Keplerian trajectory calculation (hyperbolic, parabolic, and elliptic) using Cardano's cubic formula and minimum-error-preserving Newton-Raphson iterations.
-  * `RKF` (*6th-Order Runge-Kutta-Fehlberg*): Adaptive-step numerical ODE integration of the relative two-body equations of motion.
+  * `RKF` (*4th-Order Runge-Kutta-Fehlberg*): Adaptive-step numerical ODE integration of the relative two-body equations of motion.
 * **Hybrid CPU / GPU Execution (`PLATFM`):** Supports massively parallel execution on NVIDIA GPUs (`GPU`, CUDA C++) as well as multi-core host execution (`CPU`, Fortran).
 * **Test-Particle Ensemble Mode (`N_end = 1`):** Efficiently computes $\Delta t = 1$ trajectories of a test particle placed at the origin across large initial-condition ensembles (`N_calc = 10**N_calc_EXP`) within the Debye sphere, directly yielding velocity-space diffusion and dynamical friction without small-angle Coulomb logarithm cutoffs.
 
