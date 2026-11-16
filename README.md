@@ -10,7 +10,7 @@ A three-dimensional multi-body simulation package implementing the **Binary Inte
   * `ALG` (*Exact Analytical Solver*): Integration-free exact Keplerian trajectory calculation (hyperbolic, parabolic, and elliptic) using Cardano's cubic formula and minimum-error-preserving Newton-Raphson iterations.
   * `RKF` (*4th-Order Runge-Kutta-Fehlberg*): Adaptive-step numerical ODE integration of the relative two-body equations of motion.
 * **Hybrid CPU / GPU Execution (`PLATFM`):** Supports massively parallel execution on NVIDIA GPUs (`GPU`, CUDA C++) as well as multi-core host execution (`CPU`, Fortran).
-* **Test-Particle Ensemble Mode (`N_end = 1`):** Efficiently computes $\Delta t = 1$ trajectories of a test particle placed at the origin across large initial-condition ensembles (`N_calc = 10**N_calc_EXP`) within the Debye sphere, directly yielding velocity-space diffusion and dynamical friction without small-angle Coulomb logarithm cutoffs.
+* **Test-Particle Ensemble Mode (`N_end = 1`):** Efficiently computes $\Delta t = 1$ trajectories of a test particle at rest placed at the origin across large initial-condition ensembles (`N_calc = 10**N_calc_EXP`) within the Debye sphere, directly yielding velocity-space diffusion and dynamical friction without small-angle Coulomb logarithm cutoffs.
 
 ## Physical Scaling & Specific Energy Convention
 * **Dimensionless Interaction Parameter (`eps_th`):** Defined as $\varepsilon_{\text{th}} = \pm 2 \times 3 \times 10^{-7}$ (twice the single-particle coupling parameter due to reduced mass $\mu = m/2$, with negative sign for attractive interactions and positive sign for repulsive interactions).
