@@ -36,7 +36,7 @@ Benchmarked on NVIDIA GeForce GTX 480 (CUDA 4.2) + Intel(R) Core(TM) i5-3470 CPU
 * `OUT/` : Directory for binary initial conditions (`.bbb`), exact references (`.DIM`), and BIA outputs (`.BIA`, `BIA_10^k.*`).
 
 ### Step 1: Generate Initial Conditions (`IC/`)
-Configure `N_L` (shell layers, $N_p = (2N_L + 1)^3 + 1$) and `N_calc_EXP` ($10^{\text{N\_calc\_EXP}}$ ensembles) in `IC/bbb_maker_REV.f90`, then build and run:
+Configure `N_L` (shell layers, $N_p = (2N_L + 1)^3 + 1$) and `N_calc_EXP` (`10**N_calc_EXP` ensembles) in `IC/bbb_maker_REV.f90`, then build and run:
 ```bash
 cd IC
 make && ./bbb_maker && cd ..
