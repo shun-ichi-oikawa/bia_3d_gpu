@@ -44,7 +44,7 @@ make && ./bbb_maker && cd ..
 This generates `OUT/0001332_10^0.bbb` (for `N_L = 5, N_calc_EXP = 0`) with the test particle placed at rest at the origin and field particles ordered outward by shell.
 
 ### Step 2: Generate High-Precision Reference (`dim/`, Optional)
-Required only for full-system verification (`N_end == N_p`). Configure `NP` in `dim/dim_3D.f90` and run the GPU 6th-order RKF solver:
+Required only for full-system verification (`N_end == N_p`). Configure `NP` in `dim/dim_3D.f90` and run the GPU 5th-order RKF solver:
 ```bash
 cd dim
 make && ./dim-cu && cd ..
