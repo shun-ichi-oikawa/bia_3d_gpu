@@ -12,7 +12,7 @@ A 3D hybrid Fortran/CUDA solver for gravitational and electrostatic $N$-body sim
 
 ### Repository Structure
 * **`bia/`**: Main Binary Interaction Approximation solver (`bia.f90`, `find_dXYUV_kernel.cu`, `bia-rkf.cu`, `invariance.cu`, `find_ellipse.f90`, `find_parabola.f90`, `find_hyperbola.f90`, `find_dXYUV4.f90`, `find_dXYUV_RKF.f90`, `Invariance_CPU.f90`, `Invariance_QPU.f90`, `sincos.c`, `Makefile`).
-* **`dim/`**: Direct Integration Method (`DIM`) GPU reference solver (`dim_3D.f90`, `rkf_kernel.cu`, `Invariance.f90`, `fortran_thunking.c`, `Makefile`).
+* **`dim/`**: Direct Integration Method (`DIM`) GPU reference solver using a 6-stage, 5th-order Runge–Kutta–Fehlberg (`RKF`) method (`dim_3D.f90`, `rkf_kernel.cu`, `Invariance.f90`, `fortran_thunking.c`, `Makefile`).
 * **`IC/`**: Initial condition generator (`bbb_maker_REV.f90`, `Makefile`).
 * **`OUT/`**: Output directory for initial conditions (`*.bbb`), direct integration baselines (`*.DIM`), and BIA results (`*.BIA`).
 
@@ -38,7 +38,7 @@ Measured on **NVIDIA TITAN V** (Volta `sm_70`, 12 GB HBM2, CUDA 11.8):
 
 | Solver / Mode | Kernel / Solver Time | Total Wall-Clock Time | Notes |
 | :--- | :---: | :---: | :--- |
-| **`dim-cu` (Direct Integration, GPU)** | — | `2.946 s` | Reference baseline ($\Delta E / E_0 = 1.33 \times 10^{-15}$) |
+| **`dim-cu` (Direct Integration, GPU — 6-stage, 5th-order RKF)** | — | `2.946 s` | Reference baseline ($\Delta E / E_0 = 1.33 \times 10^{-15}$) |
 | **`bia` (`ALG` / `GPU` — Analytical)** | **`0.193 s`** | **`0.680 s`** | **~4.3x faster than DIM**, position diff $\mathcal{O}(10^{-13})$ |
 | **`bia` (`ALG` / `CPU` — Analytical)** | `0.445 s` | `0.917 s` | Single-threaded Fortran CPU reference, position diff $\mathcal{O}(10^{-13})$ |
 | **`bia` (`RKF` / `GPU` — Numerical)** | `0.293 s` | `0.766 s` | Adaptive Runge–Kutta–Fehlberg (GPU) |
@@ -51,7 +51,7 @@ Measured on **NVIDIA TITAN V** (Volta `sm_70`, 12 GB HBM2, CUDA 11.8):
 ## Author, Citation & License
 
 * **Author**: Shun-ichi Oikawa (及川 俊一), Invited Teacher, Faculty of Engineering, Hokkaido University, Sapporo 060-8628, Japan
-* **ORCID**: [https://orcid.org/0009-0001-5603-2787](https://orcid.org/0009-0001-5603-2787)
+* **ORCID**: [https://orcid.org](https://orcid.org)
 * **Contact**: `lopia312oikawa@gmail.com`
 * **Zenodo Archive (v1.0.0)**: DOI `10.5281/zenodo.24131822`
 * **License**: GNU General Public License v3.0 (GPL-3.0)
