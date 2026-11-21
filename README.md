@@ -38,12 +38,13 @@ Measured on **NVIDIA TITAN V** (Volta `sm_70`, 12 GB HBM2, CUDA 11.8):
 
 | Solver / Mode | Kernel / Solver Time | Total Wall-Clock Time | Notes |
 | :--- | :---: | :---: | :--- |
-| **`dim-cu` (Direct Integration, GPU)** | — | `3.971 s` | Reference baseline ($\Delta E / E_0 = 2.44 \times 10^{-15}$) |
-| **`bia` (`ALG` / `GPU` — Analytical)** | **`0.191 s`** | **`0.664 s`** | **~6.0x faster than DIM**, position diff $\mathcal{O}(10^{-13})$ |
-| **`bia` (`ALG` / `CPU` — Analytical)** | `0.451 s` | `0.944 s` | Single-threaded Fortran CPU reference |
-| **`bia` (`RKF` / `CPU` — Numerical)** | `1.951 s` | `2.423 s` | Adaptive Runge–Kutta–Fehlberg (CPU) |
+| **`dim-cu` (Direct Integration, GPU)** | — | `2.946 s` | Reference baseline ($\Delta E / E_0 = 1.33 \times 10^{-15}$) |
+| **`bia` (`ALG` / `GPU` — Analytical)** | **`0.193 s`** | **`0.680 s`** | **~4.3x faster than DIM**, position diff $\mathcal{O}(10^{-13})$ |
+| **`bia` (`ALG` / `CPU` — Analytical)** | `0.445 s` | `0.917 s` | Single-threaded Fortran CPU reference, position diff $\mathcal{O}(10^{-13})$ |
+| **`bia` (`RKF` / `GPU` — Numerical)** | `0.293 s` | `0.766 s` | Adaptive Runge–Kutta–Fehlberg (GPU) |
+| **`bia` (`RKF` / `CPU` — Numerical)** | `1.934 s` | `2.413 s` | Adaptive Runge–Kutta–Fehlberg (CPU), position diff $\mathcal{O}(10^{-13})$ |
 
-*(Note: While the `RKF` / `GPU` mode was verified on legacy CUDA 4.2 / GTX 480 and CUDA 11.8 / RTX 3070, on Volta `sm_70` / TITAN V architectures the per-pair sequential kernel dispatch with independent thread scheduling incurs substantial latency; the analytical `ALG` / `GPU` mode is recommended for production runs.)*
+*(Note: Total wall-clock time for `bia` includes initial condition loading and multi-precision invariance verification across GPU, CPU, and Quadruple-precision routines; for production runs, the analytical `ALG` / `GPU` mode offers the highest throughput and machine-epsilon agreement with `DIM`.)*
 
 ---
 
