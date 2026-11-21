@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software in your research, please cite it using the metadata below."
 title: "bia_3d_gpu: 3D Hybrid Fortran/CUDA N-Body Solver using Binary Interaction Approximation"
 version: "1.0.1"
-date-released: 2026-11-21
+date-released: 2026-11-22
 type: software
 authors:
   - family-names: "Oikawa"
@@ -11,5 +11,5 @@ authors:
     orcid: "https://orcid.org/0009-0001-5603-2787"
     email: "lopia312oikawa@gmail.com"
 repository-code: "https://github.com/shun-ichi-oikawa/bia_3d_gpu"
-doi: "10.5281/zenodo.24131822"
+doi: "10.5281/zenodo.24414593"
 license: GPL-3.0
