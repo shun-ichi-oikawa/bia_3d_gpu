@@ -1,14 +1,17 @@
 #include <stdio.h>
-#include <cutil_inline.h>
+#include <sys/time.h>
 #include <cublas.h>
-#define BLOCKS	256
+#define BLOCKS  256
 
-void   SetTimer(unsigned int *t) {	 cutCreateTimer(t); cutStartTimer(*t); }
-double EndTimer(unsigned int *t)
-{	cutStopTimer(*t);	double ms =	cutGetTimerValue(*t); cutDeleteTimer(*t);
-	return ms;
+static struct timeval _tv_start;
+static void   SetTimer(unsigned int *t) { gettimeofday(&_tv_start, NULL); }
+static double EndTimer(unsigned int *t)
+{
+        struct timeval _tv_end;
+        gettimeofday(&_tv_end, NULL);
+        double ms = (_tv_end.tv_sec - _tv_start.tv_sec) * 1000.0 + (_tv_end.tv_usec - _tv_start.tv_usec) / 1000.0;
+        return ms;
 }
-
 __global__
 void inv_device ( const int N, double *x, double *y, double *z, double *p )
 {	unsigned int tid = blockIdx.x * blockDim.x + threadIdx.x;

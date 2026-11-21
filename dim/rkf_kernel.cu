@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<algorithm>
 #include<limits>
-#include<cutil_inline.h>
+#define cutilSafeCall(err) do { cudaError_t e = (err); if (e != cudaSuccess) { fprintf(stderr, "CUDA error %s:%d: %s\n", __FILE__, __LINE__, cudaGetErrorString(e)); exit(1); } } while(0)
 #define BLOCKS		128
 //#define BLOCKS		192
 //#define BLOCKS		256

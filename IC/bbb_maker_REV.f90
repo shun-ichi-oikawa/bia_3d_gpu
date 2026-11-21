@@ -1,8 +1,7 @@
 PROGRAM bbb_maker
    IMPLICIT REAL(8) (A-H,O-Z)
 !  integer, PARAMETER :: N_L =  0, N_calc_EXP = 0
-!  integer, PARAMETER :: N_L = 10, N_calc_EXP = 0
-   integer, PARAMETER :: N_L = 15, N_calc_EXP = 0
+   integer, PARAMETER :: N_L =  5, N_calc_EXP = 0
 !  integer, PARAMETER :: N_L = 12, N_calc_EXP = 0
 !  integer, PARAMETER :: N_L = 20, N_calc_EXP = 0
 !  integer, PARAMETER :: N_L = 25, N_calc_EXP = 0

@@ -5,8 +5,8 @@ program BIA_3D
    character*3 METHOD / 'ALG' /
 !  character*3 PLATFM / 'CPU' /
    character*3 PLATFM / 'GPU' /
-!	integer, parameter :: N_calc_EXP = 0
-	integer, parameter :: N_calc_EXP = 2
+	integer, parameter :: N_calc_EXP = 0
+!       integer, parameter :: N_calc_EXP = 2
 
 !	integer, parameter :: N_p =      2, NL =  0, N_end = N_p  ! N_end = N_p のとき、すべての粒子を解く
 !	integer, parameter :: N_p =     28, NL =  1, N_end = N_p  ! N_end = N_p のとき、すべての粒子を解く

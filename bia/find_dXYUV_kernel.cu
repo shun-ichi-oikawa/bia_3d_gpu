@@ -1,6 +1,16 @@
 #include <stdio.h>
-#include <cutil_inline.h>
 #include <cublas.h>
+#include <sys/time.h>
+
+static struct timeval _tv_start;
+void SetTimer(unsigned int *t) { gettimeofday(&_tv_start, NULL); }
+double GetTimer(unsigned int *t)
+{
+    struct timeval _tv_end;
+    gettimeofday(&_tv_end, NULL);
+    double ms = (_tv_end.tv_sec - _tv_start.tv_sec) * 1000.0 + (_tv_end.tv_usec - _tv_start.tv_usec) / 1000.0;
+    return ms;
+}
 
 #define     	BLOCKS	  128	// N = 15,626までOK
 //#define     	BLOCKS	64

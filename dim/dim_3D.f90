@@ -13,7 +13,7 @@ PROGRAM DIM_3D
 !	print *, 'N_p =', N_p, 'Neq =', Neq
 	write(cN_P  ,'(i7.7)') N_P; write(cN_calc_EXP,'(i1.1)') N_calc_EXP
 	open (1, file = '../OUT/' // cN_P // '_10^' // cN_calc_EXP // '.bbb', form='unformatted', action='read' )
-!  open (1, file = '../OUT/' // cN_P // '_10^' // cN_calc_EXP // '.ccc', form='unformatted', action='read' )
+!	open (1, file = '../OUT/' // cN_P // '_10^' // cN_calc_EXP // '.ccc', form='unformatted', action='read' )
 	open (2, file = '../OUT/' // cN_P // '_10^' // cN_calc_EXP // '.DIM', form='unformatted' )
   	open (3, file = '../OUT/DIM_10^' // cN_calc_EXP // '.' // cN_P )
 	call cpu_time(ttt0)
