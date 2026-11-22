@@ -50,7 +50,7 @@ Measured on **NVIDIA TITAN V** (Volta `sm_70`, 12 GB HBM2, CUDA 11.8):
 
 ## Author, Citation & License
 
-* **Author**: Shun-ichi Oikawa (及川 俊一), Invited Teacher, Faculty of Engineering, Hokkaido University, Sapporo 060-8628, Japan
+* **Author**: Shun-ichi Oikawa (及川 俊一), Faculty of Engineering, Hokkaido University, Sapporo 060-8628, Japan
 * **ORCID**: [https://orcid.org](https://orcid.org)
 * **Contact**: `lopia312oikawa@gmail.com`
 * **Zenodo Archive (v1.0.1 — Latest)**: DOI `10.5281/zenodo.24414593`
