@@ -8,7 +8,7 @@ A 3D hybrid Fortran/CUDA solver for gravitational and electrostatic $N$-body sim
 
 ## Overview
 
-`bia_3d_gpu` accelerates three-dimensional $N$-body simulations by decomposing pairwise interactions into analytical two-body Keplerian/Coulomb orbits (`ALG`: ellipse, parabola, hyperbola) or adaptive Runge–Kutta–Fehlberg (`RKF`) integrations on NVIDIA GPUs in strict `FP64` precision.
+`bia_3d_gpu` accelerates three-dimensional $N$-body simulations by decomposing pairwise interactions into analytical two-body Keplerian/Coulomb orbits (ALG: ellipse, parabola, hyperbola) or adaptive 6-stage, 5th-order Runge–Kutta–Fehlberg (RKF) integrations on NVIDIA GPUs in strict `FP64` precision.
 
 ### Repository Structure
 * **`bia/`**: Main Binary Interaction Approximation solver (`bia.f90`, `find_dXYUV_kernel.cu`, `bia-rkf.cu`, `invariance.cu`, `find_ellipse.f90`, `find_parabola.f90`, `find_hyperbola.f90`, `find_dXYUV4.f90`, `find_dXYUV_RKF.f90`, `Invariance_CPU.f90`, `Invariance_QPU.f90`, `sincos.c`, `Makefile`).
